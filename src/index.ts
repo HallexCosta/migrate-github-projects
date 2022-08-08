@@ -11,6 +11,7 @@ console.log()
     const octoController = new OctoController(GH_LOGIN, GH_AUTH)
     const FROM_PROJECTS = [4, 5]
     const TO_PROJECT = 3
+    const WITH_DRAFT_ISSUE = true
 
     const newProject = await octoController.listProjectItems(TO_PROJECT)
     const toProjectId = newProject.user.projectV2.id
@@ -25,7 +26,7 @@ console.log()
       for await (const item of octoController.addItemsInProject(
         toProjectId,
         items,
-        true
+        WITH_DRAFT_ISSUE
       )) {
         if (item && item.hasOwnProperty('addProjectV2ItemById')) {
           const title = item.addProjectV2ItemById?.item.content.title.toString()
