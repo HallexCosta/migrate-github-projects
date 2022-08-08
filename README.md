@@ -17,7 +17,7 @@ GH_LOGIN=
 
 ```sh
 # Clone project
-$ gh repo clone hallexcosta/migrate-projects-gituhb
+$ gh repo clone hallexcosta/migrate-projects-github
 
 # Access directory
 $ cd migrate-projects-gituhb/
