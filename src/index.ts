@@ -17,7 +17,7 @@ console.log()
 
     for (const FROM_PROJECT of FROM_PROJECTS) {
       const oldProject = await octoController.listProjectItems(FROM_PROJECT)
-      console.log('TO_PROJECT_ID', newProject.user.projectV2.title)
+      console.log('TO_PROJECT', newProject.user.projectV2.title)
       console.log('FROM_PROJECT', oldProject.user.projectV2.title)
 
       const items = oldProject.user.projectV2.items.nodes
