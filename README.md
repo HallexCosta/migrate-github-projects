@@ -1,6 +1,6 @@
 ## Migrate Projects
 
-Automation to migrate items of a Project A to another Project B
+Automation to easy migrate items (issues, pull request and draft issues) of a Project A to another Project B
 
 ![working](https://user-images.githubusercontent.com/55293671/183350107-2607c755-969d-4420-be85-9f3734b40286.png?width=50)
 
@@ -24,8 +24,6 @@ $ cd migrate-projects-gituhb/
 
 # Compile to ts code
 $ yarn build
-
-# Configure .env file...
 
 # Run project
 $ yarn start
