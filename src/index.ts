@@ -24,11 +24,17 @@ console.log()
 
       for await (const item of octoController.addItemsInProject(
         toProjectId,
-        items
+        items,
+        true
       )) {
-        const title = item.addProjectV2ItemById.item.content.title
-        const number = item.addProjectV2ItemById.item.content.number
-        console.log(`#${number} - ${title}`)
+        if (item && item.hasOwnProperty('addProjectV2ItemById')) {
+          const title = item.addProjectV2ItemById?.item.content.title.toString()
+          const number = item.addProjectV2ItemById?.item.content.number || 0
+          console.log(`#${number} - ${title}`)
+        } else {
+          const title = item.addProjectV2DraftIssue?.projectItem.content.title
+          console.log(`DRAFT_ISSUE - ${title}`)
+        }
       }
       console.log()
     }

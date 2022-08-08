@@ -7,6 +7,7 @@ declare type UserProjectItemNode = {
     id: string
     number: number
     title: string
+    body: string
     closed: boolean
     projectCards: {
       nodes: {
@@ -32,7 +33,7 @@ export declare type UserProjectItemsProps = {
   }
 }
 export declare type ProjectAddItemResponse = {
-  addProjectV2ItemById: {
+  addProjectV2ItemById?: {
     item: {
       id: string
       type: string
@@ -40,6 +41,28 @@ export declare type ProjectAddItemResponse = {
         id: string
         number: number
         title: string
+        body: string
+        closed: boolean
+        projectCards: {
+          nodes: {
+            column: {
+              id: string
+              name: string
+            }
+          }[]
+        }
+      }
+    }
+  },
+  addProjectV2DraftIssue?: {
+    projectItem: {
+      id: string
+      type: string
+      content: {
+        id: string
+        number: number
+        title: string
+        body: string
         closed: boolean
         projectCards: {
           nodes: {
@@ -76,16 +99,47 @@ export default class {
 
   public async *addItemsInProject(
     toProjectId: string,
-    itemsContent: UserProjectItemNode[]
+    itemsContent: UserProjectItemNode[],
+    withDraftIssue: boolean
   ) {
     for (const item of itemsContent) {
       const isDraftIssue = item.type.includes('DRAFT')
-      if (!isDraftIssue)
-        yield await this.addItemInProject(toProjectId, item.content.id)
+      if (isDraftIssue) {
+        if (withDraftIssue)
+          yield await this.addDraftIssueItemInProject(toProjectId, item.content.title, item.content.body)
+      } else {
+        yield await this.addIssueOrPullRequestItemInProject(toProjectId, item.content.id)
+      }
     }
   }
 
-  public async addItemInProject(
+  public async addDraftIssueItemInProject(
+    projectId: string,
+    title: string,
+    body: string
+  ): Promise<ProjectAddItemResponse> {
+    const query = `
+     mutation {
+      addProjectV2DraftIssue(input: {
+        projectId: "${projectId}",
+        title: "${title}",
+        body: "${body}"
+      }) {
+        projectItem {
+          id,
+          type,
+          content {
+            ... on DraftIssue {
+              id,
+              title          
+            }
+          }
+        }
+      }
+    }`
+    return (await this.graphqlWithAuth(query)) as any
+  }
+  public async addIssueOrPullRequestItemInProject(
     projectId: string,
     contentId: string
   ): Promise<ProjectAddItemResponse> {
@@ -183,7 +237,8 @@ export default class {
                   },           
                   ... on DraftIssue {
                     id,
-                    title
+                    title,
+                    body
                   }
                 }
               }
